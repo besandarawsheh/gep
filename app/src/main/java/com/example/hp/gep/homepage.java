@@ -40,6 +40,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -198,7 +199,7 @@ public class homepage extends mainpage {
                     Toast.makeText(homepage.this, "created ", Toast.LENGTH_SHORT).show();
 
                     page = "createdEvents";
-                    new GetHttpResponse(homepage.this).execute(page);
+                    new GetResponse(homepage.this).execute(page);
                     // httpService.AddParam("email",email);
                     //onCretedCall("email");//email.trim());
                    /* Intent intent = new Intent(homepage.this,allEvents.class);
@@ -285,6 +286,14 @@ public class homepage extends mainpage {
                   bufferedReader.close();
                   inputStream.close();
                   httpURLConnection.disconnect();
+                  String JSonresult = httpService.getResponse();
+                  try {
+                      JSONObject jsonObject = new JSONObject(JSonresult);
+                      Log.d("raslanid", jsonObject.getString("id"));
+                  } catch (JSONException e) {
+                      e.printStackTrace();
+                  }
+
                   return result;
 
               }
@@ -314,6 +323,7 @@ public class homepage extends mainpage {
           protected void onPostExecute(String result) {
              alertDialog.setMessage(result);
              alertDialog.show();
+
               new GetResponse(homepage.this).execute("createdEvents");
               // homepage hp= new homepage();
               // hp.ANY();
@@ -575,7 +585,7 @@ private class GetResponse extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
 
-            httpService.responseCode = 200;
+            //httpService.responseCode = 200;
             httpService = new HttpService(created_url);
 
         try {
@@ -585,10 +595,11 @@ private class GetResponse extends AsyncTask<String, Void, String> {
                 JSonresult = httpService.getResponse();
                 //FERGERG4TRTRG  UNDER
                 Log.d("{Result}", JSonresult);
-                Toast.makeText(homepage.this, "doInBackGround!",
+                Toast.makeText(getApplicationContext()
+                        , "doInBackGround!",
                         LENGTH_SHORT).show();
                 if (JSonresult != null) {
-                    Toast.makeText(getApplicationContext(), JSonresult.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), JSonresult, Toast.LENGTH_LONG).show();
                     JSONArray jsonArray = null;
                     try {
                         jsonArray = new JSONArray();
@@ -618,6 +629,7 @@ private class GetResponse extends AsyncTask<String, Void, String> {
                         }
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
+                        Log.d("raslan", "error");
                         e.printStackTrace();
                     }
                 }
@@ -640,6 +652,36 @@ private class GetResponse extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         Toast.makeText(homepage.this, "browse your events!",
                 LENGTH_SHORT).show();
+        Toast.makeText(homepage.this, JSonresult, Toast.LENGTH_LONG).show();
+        try {
+            JSONObject object =new JSONObject(JSonresult);
+        //JSonresult, Event.class);
+        //(JSONObject) parser.parse(FinalJSonObject);
+                JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(JSonresult);
+            String eventsForId = null;
+            eventsForId = object.getString("id");
+            Log.d("eventsForId", eventsForId);
+            Log.d("JSONOBJECT", jsonObject.toString());
+            JSONArray jsonArray = object.getJSONArray(JSonresult);
+            Event evento;
+            eventList = new ArrayList<Event>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                evento = new Event();
+                object = jsonArray.getJSONObject(i);
+                //adding event id to eventsID
+                eventsID.add(object.getString("event_id").toString());
+
+                //adding event location
+                evento.event_name = object.getString("event_name").toString();
+                evento.event_date = object.getString("event_date").toString();
+
+
+                eventList.add(evento);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // alertDialog.setMessage("ggtgtg");
         // alertDialog.show();
         progressBar.setVisibility(View.GONE);
