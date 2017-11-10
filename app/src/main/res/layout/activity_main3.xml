@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/BlueGrey"
+    android:id="@+id/activity_main3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.hp.gep.Main3Activity">
+
+
+    <TextView
+            android:text="How do you want to view your events??"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/BlueGrey"
+            android:id="@+id/textView" />
+
+    <Button
+        android:text="TYPE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginLeft="45dp"
+
+        android:id="@+id/typeb"
+        android:layout_alignBaseline="@+id/timeb"
+        android:layout_alignBottom="@+id/timeb"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        />
+
+    <Button
+        android:text="TIME"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timeb"
+        android:layout_above="@+id/locationb"
+        android:layout_toEndOf="@+id/allb"
+        android:layout_toRightOf="@+id/allb"
+
+        android:layout_marginStart="66dp"
+        android:layout_marginLeft="66dp"
+
+        android:layout_marginBottom="46dp" />
+
+    <Button
+        android:text="FAVOURITES"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/allb"
+        android:layout_alignEnd="@+id/locationb"
+        android:layout_alignRight="@+id/locationb"
+
+        android:layout_marginTop="11dp"
+        android:id="@+id/favb" />
+
+    <Button
+        android:text="ALL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+
+        android:id="@+id/allb"
+        android:layout_marginBottom="148dp"
+        android:onClick="showAll (Main3Activity)"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/dateb"
+        android:layout_alignLeft="@+id/dateb"
+
+    />
+
+    <Button
+        android:text="LOCATION"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/locationb"
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/favb"
+        android:layout_alignEnd="@+id/timeb"
+        android:layout_alignRight="@+id/timeb"
+
+
+        />
+
+    <Button
+        android:text="DATE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dateb"
+        android:layout_alignBaseline="@+id/locationb"
+        android:layout_alignBottom="@+id/locationb"
+        android:layout_alignStart="@+id/typeb"
+        android:layout_alignLeft="@+id/typeb"
+
+
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_reply_white_18dp"
+        android:background="@color/BlueGrey"
+
+        android:layout_marginStart="13dp"
+        android:layout_marginLeft="13dp"
+
+        android:id="@+id/imageButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+
+        android:layout_marginBottom="16dp" />
+
+</RelativeLayout>
