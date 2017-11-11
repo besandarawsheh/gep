@@ -33,10 +33,10 @@ public class SingleEvent extends mainpage {
     ProgressDialog pDialog;
 
     // Http Url For Filter Student Data from Id Sent from previous activity.
-    String filterED_url= "http://192.168.1.70/FilterEventData.php";
+    String filterED_url= "http://192.168.1.108/FilterEventData.php";
 
     // Http URL for delete Already Open Student Record.
-    String delE_url = "http://192.168.1.70/DeleteEvent.php";
+    String delE_url = "http://192.168.1.108/DeleteEvent.php";
 
     String finalResult ;
     HashMap<String,String> hashMap = new HashMap<>();

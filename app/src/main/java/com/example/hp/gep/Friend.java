@@ -115,7 +115,7 @@ public class Friend extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://192.168.1.70/search.php");
+                url = new URL("http://192.168.1.108/search.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block

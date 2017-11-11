@@ -30,7 +30,7 @@ public class allEvents extends mainpage {
     HashMap<String,String> hashMap = new HashMap<>();
     ListView eventListView;
     ProgressBar progressBar;
-    String allED_url = "http://192.168.1.70/createdEvents.php";
+    String allED_url = "http://192.168.1.108/createdEvents.php";
     List<String> eventsID = new ArrayList<>();
 
     @Override

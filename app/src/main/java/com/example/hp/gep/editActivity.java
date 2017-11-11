@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class editActivity extends AppCompatActivity {
 
-    String HttpURL = "http://192.168.1.70/UpdateEvent.php";
+    String HttpURL = "http://192.168.1.108/UpdateEvent.php";
     ProgressDialog progressDialog;
     String finalResult ;
     HashMap<String,String> hashMap = new HashMap<>();

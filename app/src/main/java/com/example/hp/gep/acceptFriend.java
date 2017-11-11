@@ -35,7 +35,7 @@ public class acceptFriend extends AsyncTask<String,Void,String> {
 protected String doInBackground(String...params){
 //extract epage from params
 
-        String friendInfo_url="http://192.168.1.70/actionFRequest.php";
+        String friendInfo_url="http://192.168.1.108/actionFRequest.php";
 
         //posting
         try{

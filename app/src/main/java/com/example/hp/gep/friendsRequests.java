@@ -31,7 +31,7 @@ public class friendsRequests extends mainpage {
 
     ListView eventListView;
     ProgressBar progressBar;
-    String allED_url = "http://192.168.1.70/fRequests.php";
+    String allED_url = "http://192.168.1.108/fRequests.php";
     List<String> FRID = new ArrayList<>();
 
     @Override

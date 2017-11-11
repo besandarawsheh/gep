@@ -32,7 +32,7 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... params) {
 //extract epage from params
         String epage = params[0];
-        String eventInfo_url = "http://192.168.1.70/addedEventInfo.php";
+        String eventInfo_url = "http://192.168.1.108/addedEventInfo.php";
         if (epage.equals("addedEventInfo")) {
             //posting
             try {

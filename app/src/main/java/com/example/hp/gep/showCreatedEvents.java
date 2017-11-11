@@ -35,7 +35,7 @@ public class showCreatedEvents extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... params) {
 //extract epage from params
 
-        String eventInfo_url = "http://192.168.1.70/createdEvents.php";
+        String eventInfo_url = "http://192.168.1.108/createdEvents.php";
 
             //posting
             try {
