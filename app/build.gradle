@@ -25,6 +25,8 @@ android {
 
 repositories {
     maven { url "https://jitpack.io" }
+    maven { url "https://maven.google.com" }
+
 }
 
 dependencies {
@@ -35,6 +37,15 @@ dependencies {
 
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     //compile 'com.android.volley:volley:1.0.0'
+    compile 'com.google.firebase:firebase-core:11.0.4'
+
+    compile 'com.google.firebase:firebase-database:11.0.4'
+    compile 'com.google.firebase:firebase-messaging:11.0.4'
+    compile 'com.google.firebase:firebase-auth:11.0.4'
+    // okhttp
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    // event bus
+    compile 'org.greenrobot:eventbus:3.0.0'
 
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.squareup.picasso:picasso:2.3.2'

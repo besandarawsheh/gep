@@ -13,13 +13,16 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.hp.gep.Chat.core.login.LoginContract;
+import com.example.hp.gep.Chat.core.login.LoginPresenter;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, LoginContract.View{
 
     private static final String TAG = "LoginActivity";
     private static final String URL_FOR_LOGIN = "http://192.168.1.108/login.php";
@@ -46,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 loginUser(loginInputEmail.getText().toString(),
                         loginInputPassword.getText().toString());
+
             }
         });
 
@@ -75,7 +79,8 @@ public class LoginActivity extends AppCompatActivity {
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
-
+                        LoginPresenter loginPresenter = new LoginPresenter();
+                        loginPresenter.login(null, email, password);
                         String user = jObj.getJSONObject("user").getString("name");
                         // Launch User activity
 Email.setEmail(email);
@@ -136,6 +141,21 @@ Email.setEmail(email);
             progressDialog.dismiss();
     }
 
+    @Override
+    public void onLoginSuccess(String message) {
+        Toast.makeText(getApplicationContext(), "success ", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onLoginFailure(String message) {
+        Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onClick(View view) {
+        //super.onClick();
+        Log.d("View", view.toString());
+    }
 }
 
 

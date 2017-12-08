@@ -36,23 +36,29 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.hp.gep.Chat.core.registration.RegisterContract;
+import com.example.hp.gep.Chat.core.registration.RegisterPresenter;
+import com.example.hp.gep.Chat.core.users.add.AddUserContract;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements  RegisterContract.View, AddUserContract.View {
 
     private static final String TAG = "RegisterActivity";
     private static final String URL_FOR_REGISTRATION = "http://192.168.1.108/register.php";
     ProgressDialog progressDialog;
-
+    String EMAIL = "";
+    String PASSWORD = "";
     private EditText signupInputName, signupInputEmail, signupInputPassword, signupInputAge;
     private Button btnSignUp;
     private Button btnLinkLogin;
     private RadioGroup genderRadioGroup;
-
+    RegisterPresenter registerPresenter = new RegisterPresenter(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +111,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(final String name,  final String email, final String password,
                               final String gender, final String dob) {
+        EMAIL = email;
+        PASSWORD = password;
+        registerPresenter.register(null, EMAIL, PASSWORD);
         // Tag used to cancel the request
         String cancel_req_tag = "register";
 
@@ -180,4 +189,26 @@ public class RegisterActivity extends AppCompatActivity {
             progressDialog.dismiss();
     }
 
+
+    @Override
+    public void onAddUserSuccess(String message) {
+        Toast.makeText(this.getApplicationContext(),
+                        "Regestration successfull \n", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAddUserFailure(String message) {
+        Toast.makeText(this.getApplicationContext(),
+                "Regestration failed\n", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRegistrationSuccess(FirebaseUser firebaseUser) {
+
+    }
+
+    @Override
+    public void onRegistrationFailure(String message) {
+
+    }
 }

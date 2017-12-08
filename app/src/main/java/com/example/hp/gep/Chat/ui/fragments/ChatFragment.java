@@ -1,10 +1,9 @@
-package com.example.hp.gep;
+package com.example.hp.gep.Chat.ui.fragments;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -15,13 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hp.gep.R;
 import com.example.hp.gep.Chat.core.chat.ChatContract;
 import com.example.hp.gep.Chat.core.chat.ChatPresenter;
 import com.example.hp.gep.Chat.events.PushNotificationEvent;
 import com.example.hp.gep.Chat.models.Chat;
 import com.example.hp.gep.Chat.ui.adapters.ChatRecyclerAdapter;
-import com.example.hp.gep.Chat.ui.fragments.ChatFragment;
-import  com.example.hp.gep.Chat.utils.Constants;
+import com.example.hp.gep.Chat.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,25 +29,24 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 
 
-public class chat extends Fragment implements ChatContract.View, TextView.OnEditorActionListener{
-    private static final String TAG = "ChatActivity";
-    private RecyclerView recyclerView;
-    private EditText editText;
+public class ChatFragment extends Fragment implements ChatContract.View, TextView.OnEditorActionListener {
+    private RecyclerView mRecyclerViewChat;
+    private EditText mETxtMessage;
 
-    private ProgressDialog progressDialog;
+    private ProgressDialog mProgressDialog;
 
-    private ChatRecyclerAdapter chatRecyclerAdapter;
+    private ChatRecyclerAdapter mChatRecyclerAdapter;
 
-    private ChatPresenter chatPresenter;
+    private ChatPresenter mChatPresenter;
 
-    public static chat newInstance(String receiver,
+    public static ChatFragment newInstance(String receiver,
                                            String receiverUid,
                                            String firebaseToken) {
         Bundle args = new Bundle();
         args.putString(Constants.ARG_RECEIVER, receiver);
         args.putString(Constants.ARG_RECEIVER_UID, receiverUid);
         args.putString(Constants.ARG_FIREBASE_TOKEN, firebaseToken);
-        chat fragment = new chat();
+        ChatFragment fragment = new ChatFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,14 +66,14 @@ public class chat extends Fragment implements ChatContract.View, TextView.OnEdit
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View fragmentView = inflater.inflate(R.layout.activity_chat, container, false);
+        View fragmentView = inflater.inflate(R.layout.activity_main, container, false);
         bindViews(fragmentView);
         return fragmentView;
     }
 
     private void bindViews(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_chat);
-        editText = (EditText) view.findViewById(R.id.edit_text_message);
+//        mRecyclerViewChat = (RecyclerView) view.findViewById(R.id.txtRemail);
+//        mETxtMessage = (EditText) view.findViewById(R.id.edit_text_message);
     }
 
     @Override
@@ -85,15 +83,15 @@ public class chat extends Fragment implements ChatContract.View, TextView.OnEdit
     }
 
     private void init() {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle(getString(R.string.loading));
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.setIndeterminate(true);
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setTitle(getString(R.string.loading));
+        mProgressDialog.setMessage(getString(R.string.please_wait));
+        mProgressDialog.setIndeterminate(true);
 
-        editText.setOnEditorActionListener(this);
+        mETxtMessage.setOnEditorActionListener(this);
 
-        chatPresenter = new ChatPresenter(this);
-        chatPresenter.getMessage(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+        mChatPresenter = new ChatPresenter(this);
+        mChatPresenter.getMessage(FirebaseAuth.getInstance().getCurrentUser().getUid(),
                 getArguments().getString(Constants.ARG_RECEIVER_UID));
     }
 
@@ -107,7 +105,7 @@ public class chat extends Fragment implements ChatContract.View, TextView.OnEdit
     }
 
     private void sendMessage() {
-        String message = editText.getText().toString();
+        String message = mETxtMessage.getText().toString();
         String receiver = getArguments().getString(Constants.ARG_RECEIVER);
         String receiverUid = getArguments().getString(Constants.ARG_RECEIVER_UID);
         String sender = FirebaseAuth.getInstance().getCurrentUser().getEmail();
@@ -119,14 +117,14 @@ public class chat extends Fragment implements ChatContract.View, TextView.OnEdit
                 receiverUid,
                 message,
                 System.currentTimeMillis());
-        chatPresenter.sendMessage(getActivity().getApplicationContext(),
+        mChatPresenter.sendMessage(getActivity().getApplicationContext(),
                 chat,
                 receiverFirebaseToken);
     }
 
     @Override
     public void onSendMessageSuccess() {
-        editText.setText("");
+        mETxtMessage.setText("");
         Toast.makeText(getActivity(), "Message sent", Toast.LENGTH_SHORT).show();
     }
 
@@ -137,12 +135,12 @@ public class chat extends Fragment implements ChatContract.View, TextView.OnEdit
 
     @Override
     public void onGetMessagesSuccess(Chat chat) {
-        if (chatRecyclerAdapter == null) {
-            chatRecyclerAdapter = new ChatRecyclerAdapter(new ArrayList<Chat>());
-            recyclerView.setAdapter(chatRecyclerAdapter);
+        if (mChatRecyclerAdapter == null) {
+            mChatRecyclerAdapter = new ChatRecyclerAdapter(new ArrayList<Chat>());
+            mRecyclerViewChat.setAdapter(mChatRecyclerAdapter);
         }
-        chatRecyclerAdapter.add(chat);
-        recyclerView.smoothScrollToPosition(chatRecyclerAdapter.getItemCount() - 1);
+        mChatRecyclerAdapter.add(chat);
+        mRecyclerViewChat.smoothScrollToPosition(mChatRecyclerAdapter.getItemCount() - 1);
     }
 
     @Override
@@ -152,8 +150,8 @@ public class chat extends Fragment implements ChatContract.View, TextView.OnEdit
 
     @Subscribe
     public void onPushNotificationEvent(PushNotificationEvent pushNotificationEvent) {
-        if (chatRecyclerAdapter == null || chatRecyclerAdapter.getItemCount() == 0) {
-            chatPresenter.getMessage(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+        if (mChatRecyclerAdapter == null || mChatRecyclerAdapter.getItemCount() == 0) {
+            mChatPresenter.getMessage(FirebaseAuth.getInstance().getCurrentUser().getUid(),
                     pushNotificationEvent.getUid());
         }
     }

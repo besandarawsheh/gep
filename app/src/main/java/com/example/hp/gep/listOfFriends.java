@@ -1,14 +1,16 @@
 package com.example.hp.gep;
 
 import android.content.DialogInterface;
-        import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.app.AlertDialog;
         import android.content.Context;
         import android.content.Intent;
         import android.nfc.Tag;
         import android.os.AsyncTask;
-        import android.util.Log;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
         import android.view.View;
         import android.widget.AdapterView;
         import android.widget.FrameLayout;
@@ -23,8 +25,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.zopim.android.sdk.api.ZopimChat;
-import com.zopim.android.sdk.prechat.ZopimChatActivity;
+import com.example.hp.gep.Chat.core.users.get.all.GetUsersContract;
+import com.example.hp.gep.Chat.core.users.get.all.GetUsersPresenter;
+import com.example.hp.gep.Chat.models.User;
+import com.example.hp.gep.Chat.utils.Constants;
+import com.example.hp.gep.Chat.utils.ItemClickSupport;
 
 import org.json.simple.parser.JSONParser;
 
@@ -39,7 +44,7 @@ import java.util.Map;
 
 import static android.widget.Toast.*;
 
-public class  listOfFriends extends mainpage {
+public class  listOfFriends extends mainpage implements GetUsersContract.View, ItemClickSupport.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     ListView eventListView;
     ProgressBar progressBar;
@@ -49,7 +54,7 @@ public class  listOfFriends extends mainpage {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ZopimChat.init("5JkxRtWyisDmbSD6J1SeMfwsZ4htowIz");
+        //ZopimChat.init("5JkxRtWyisDmbSD6J1SeMfwsZ4htowIz");
         //setContentView(R.layout.activity_all_events);
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame); //Remember this is the FrameLayout area within your activity_main.xml
         getLayoutInflater().inflate(R.layout.activity_list_of_friends, contentFrameLayout);
@@ -174,12 +179,16 @@ public class  listOfFriends extends mainpage {
                 builder.setNeutralButton("StartChatting",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        /*Intent i = new Intent(getApplicationContext(),chat.class);
-                        //ntent.putExtra("ListViewValue", eventsID.get(position).toString());
-
-                        startActivity(i);*/
-                        startActivity(new Intent(getApplicationContext(), ZopimChatActivity.class));
-
+                        TextView email = (TextView)findViewById(R.id.txtRemail);
+                        TextView name = (TextView)findViewById(R.id.txtRname);
+                        TextView frg = (TextView)findViewById(R.id.txtRgender);
+                            GetUsersPresenter getUsersPresenter = new GetUsersPresenter(this);
+                        chat ch = chat.newInstance("reciver", "reciverID", "FBT");
+                        Intent intent = new Intent(getApplicationContext(), chat.class);
+                        intent.putExtra(Constants.ARG_RECEIVER, email.getText());
+                        intent.putExtra(Constants.ARG_RECEIVER_UID, email.getText());
+                        //intent.putExtra(Constants.ARG_FIREBASE_TOKEN, firebaseToken);
+                        getApplicationContext().startActivity(intent);
                     }
                 });
 
@@ -219,7 +228,35 @@ public class  listOfFriends extends mainpage {
     }
 
 
+    @Override
+    public void onRefresh() {
 
+    }
+
+    @Override
+    public void onGetAllUsersSuccess(List<User> users) {
+
+    }
+
+    @Override
+    public void onGetAllUsersFailure(String message) {
+
+    }
+
+    @Override
+    public void onGetChatUsersSuccess(List<User> users) {
+
+    }
+
+    @Override
+    public void onGetChatUsersFailure(String message) {
+
+    }
+
+    @Override
+    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+        Log.d("view", v.toString());
+    }
 }
 
 
