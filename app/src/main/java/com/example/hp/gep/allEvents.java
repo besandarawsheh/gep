@@ -14,6 +14,14 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.simple.parser.JSONParser;
 
 import org.json.JSONArray;
@@ -23,14 +31,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.widget.Toast.*;
 
 public class allEvents extends mainpage {
+    ///////all my created events
     HashMap<String,String> hashMap = new HashMap<>();
     ListView eventListView;
     ProgressBar progressBar;
-    String allED_url = "http://192.168.1.108/createdEvents.php";
+    String created_url = "http://192.168.1.108/se.php";
     List<String> eventsID = new ArrayList<>();
 
     @Override
@@ -43,11 +53,88 @@ public class allEvents extends mainpage {
         //setContentView(R.layout.activity_homepage);
 
         eventListView = (ListView) findViewById(R.id.listview1);
-
+        final RequestQueue queue = Volley.newRequestQueue(this);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        String email =getIntent().getStringExtra("email");
+        final String email =getIntent().getStringExtra("email");
 
-        new GetHttpResponse(allEvents.this).execute();
+        final ArrayList array =new ArrayList<Event>();
+        StringRequest postRequest = new StringRequest(Request.Method.POST,created_url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(allEvents.this, response, Toast.LENGTH_SHORT).show();
+                        eventsID.clear();
+                        response+=",";
+                        String[] data = response.split(",");
+                        //eventsID.clear();
+                        if (data.length>0) {
+                            for (int i = 0; i < data.length ; i+=3) {
+                                Event evento =new Event();
+                                Toast.makeText(allEvents.this, data[i], Toast.LENGTH_SHORT).show();
+                                // evento.event_name
+
+                                evento.event_name = data[i];
+                                evento.event_date = data[i+1];
+
+                                //result.append(data[i])
+                                array.add(evento);
+                                eventsID.add(data[i+2]);
+                            }
+
+
+
+                            progressBar.setVisibility(View.GONE);
+                            eventListView.setVisibility(View.VISIBLE);
+                            // alertDialog.setMessage(result);
+                            //alertDialog.show();
+                            if (array != null) {
+                                ListAdapter adapter = new ListAdapter(array, allEvents.this);
+                                eventListView.setAdapter(adapter);
+                            }
+
+                        }
+                        else {
+                            Toast.makeText(allEvents.this, "can't insert into array", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        // Log.d("Error.Response", String.valueOf(error));
+
+                        Toast.makeText(allEvents.this, "hhhhh ", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+              if(Email.getANum()!=0){
+
+                }
+                else if(Email.getANum()!=0)
+                {
+                    String email=Email.getEmail();
+                    params.put("email",email.toString());
+                    return params;}
+
+               else if(Email.getANum()==0){ String email=Email.getEmail();
+                params.put("email",email.toString());
+                return params;}
+                else{
+                String email=Email.getEmail();
+                params.put("email",email.toString());
+                return params;}
+                //params.put("email",email.toString());
+                return params;
+            }
+        };
+        queue.add(postRequest);
 
 
         //Adding ListView Item click Listener.
@@ -70,112 +157,9 @@ public class allEvents extends mainpage {
 
             }
         });
-    }
-
-    // JSON parse class started from here.
-    private class GetHttpResponse extends AsyncTask<Void,Void,Void> {
-        public Context context;
-       // AlertDialog alertDialog;
-        String JSonresult;
-        String email =getIntent().getStringExtra("email");
-        List<Event> eventList;
-
-        public GetHttpResponse(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            //alertDialog=new AlertDialog.Builder(context).create();
-            //alertDialog.setTitle("status");
-            Toast.makeText(allEvents.this, "onPreExecute!",
-                    LENGTH_SHORT).show();
-
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            //passing http url to httpservice class
-
-            HttpService httpService = new HttpService(allED_url);
-
-            try {
-
-               httpService.ExecutePostRequest();
-
-                if (httpService.getResponseCode() == 200) {
-                    JSonresult = httpService.getResponse();
-                    //FERGERGTRTRG  UNDER
-                    Log.d("{Result}", JSonresult);
-                    if (JSonresult != null) {
-                        JSONArray jsonArray = null;
-                        try {
-
-                            jsonArray= new JSONArray(JSonresult);
-                            JSONObject object;
-                            //YUKUJTYJTYJTYJ UNDER
-                           eventsID.clear();
-                            //JSONArray array;
-                            Event evento;
-                            eventList = new ArrayList<Event>();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                evento = new Event();
-                                object = jsonArray.getJSONObject(i);
-                                //adding event id to eventsID
-                               // if(email.equals(object.getString("").toString()))
-                                eventsID.add(object.getString("event_id").toString());
-
-                               //adding event location
-                                evento.event_name = object.getString("event_name").toString();
-                                evento.event_date = object.getString("event_date").toString();
-
-
-                                eventList.add(evento);
-                            }
-                        }
-                        catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-                    makeText(context, httpService.getErrorMessage(), LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            Toast.makeText(allEvents.this, "browse your events!",
-                    LENGTH_SHORT).show();
-           // alertDialog.setMessage("ggtgtg");
-           // alertDialog.show();
-            progressBar.setVisibility(View.GONE);
-            eventListView.setVisibility(View.VISIBLE);
-           // alertDialog.setMessage(result);
-            //alertDialog.show();
-          if(eventList != null)
-            {
-                ListAdapter adapter = new ListAdapter(eventList, context);
-                eventListView.setAdapter(adapter);
-            }
-            //      alertDialog.setMessage(result);
-            //    alertDialog.show();
-        }
 
     }
+
 
 }
 

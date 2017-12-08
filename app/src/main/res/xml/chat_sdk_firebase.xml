@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <string name="google_maps_api_key">AIzaSyAfX0ZO36kXwENAHPW2PFCOWPuShaWNMcM</string>
+</PreferenceScreen>

@@ -8,6 +8,15 @@ import android.app.Application;
 
 public  class Email {
     private static String email;
+private static  int activitynum ;
+    public static int getANum() {
+        return activitynum;
+    }
+
+    public  static  void setANum(int someVariable) {
+        activitynum = someVariable;
+    }
+
 
     public static String getEmail() {
         return email;

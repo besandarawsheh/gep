@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_show_single_record"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:background="@drawable/loginbackground"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.hp.gep.SingleEvent"
-    android:background="@color/BlueGrey">
+  >
 
     <TextView
         android:id="@+id/textView"
@@ -17,14 +19,14 @@
         android:layout_height="wrap_content"
         android:allowUndo="false"
         android:text="Event Name: "
-        android:textColor="#f48fb1"
+        android:textColor="#000000"
         android:textSize="20dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="Name Show Here"
+        android:hint="Name shown here"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
@@ -34,22 +36,23 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignLeft="@+id/textType"
-        android:layout_alignStart="@+id/textType" />
+        android:layout_alignStart="@+id/textType"
+        android:layout_alignBottom="@+id/textView" />
 
     <TextView
         android:text="Event Type : "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#f48fb1"
+        android:textColor="#000000"
         android:textSize="20dp"
         android:id="@+id/textView3"
-        android:layout_marginTop="15dp"
         android:layout_below="@+id/textView"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="14dp" />
 
     <TextView
-        android:text="TYPE Show Here"
+        android:hint="Type shown here"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
@@ -59,14 +62,15 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/textView5"
-        android:layout_toEndOf="@+id/textView5" />
+        android:layout_toEndOf="@+id/textView5"
+        android:layout_below="@+id/textName" />
 
     <TextView
 
         android:text="Event Location:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#f48fb1"
+        android:textColor="#000000"
         android:textSize="20dp"
         android:id="@+id/textView5"
         android:layout_marginTop="14dp"
@@ -75,7 +79,7 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="Location Show Here "
+        android:hint="Location shown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
@@ -92,7 +96,7 @@
         android:text="Male:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#f48fb1"
+        android:textColor="#000000"
         android:textSize="20dp"
         android:id="@+id/textView6"
         android:layout_marginTop="15dp"
@@ -101,23 +105,22 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="male "
+        android:hint="num of male"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
         android:textSize="20dp"
         android:id="@+id/textmale"
-        android:layout_alignBaseline="@+id/textView6"
-        android:layout_alignBottom="@+id/textView6"
-        android:layout_alignLeft="@+id/textfmale"
-        android:layout_alignStart="@+id/textfmale" />
+        android:layout_alignLeft="@+id/textLocation"
+        android:layout_alignStart="@+id/textLocation"
+        android:layout_alignTop="@+id/textView6" />
 
     <TextView
 
         android:text="Fmale:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#f48fb1"
+        android:textColor="#000000"
         android:textSize="20dp"
         android:id="@+id/textView7"
         android:layout_below="@+id/textView6"
@@ -126,39 +129,42 @@
         android:layout_marginTop="19dp" />
 
     <TextView
-        android:text="Fmale "
+        android:id="@+id/textfmale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/piechart"
+        android:layout_alignLeft="@+id/textmale"
+        android:layout_alignStart="@+id/textmale"
+        android:hint="num of female"
         android:textColor="#fff"
-        android:textSize="20dp"
-        android:id="@+id/textfmale"
-        android:layout_centerHorizontal="true"
-        android:layout_alignTop="@+id/textView7"
-        android:layout_alignBottom="@+id/textView7" />
+        android:textSize="20dp" />
 
-    <Button
-        android:text="Edit This Event"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonEdit"
-        android:layout_above="@+id/buttonDelete"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:text="Delete This Event"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonDelete"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/piechart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonEdit"
-        android:layout_below="@+id/textView7" />
+        android:layout_below="@+id/textView7"
+        android:layout_above="@+id/buttonEdit" />
+
+    <ImageButton
+        android:id="@+id/buttonEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/edit"
+        android:background="@drawable/loginbackground"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:id="@+id/buttonDelete"
+        android:background="@drawable/loginbackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/buttonEdit"
+        app:srcCompat="@drawable/deletefe"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
 

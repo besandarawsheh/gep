@@ -21,10 +21,12 @@ public class willgo extends AppCompatActivity {
     ProgressDialog pDialog;
 
     // Http Url For Filter Student Data from Id Sent from previous activity.
-    String filterED_url= "http://172.19.111.216/FilterEventData.php";
-    String willcomeURL = "http://172.19.111.216/willcome.php";
+    String filterED_url= "http://192.168.1.108/FilterEventData.php";
+    String willcomeURL = "http://192.168.1.108/willcome.php";
     // Http URL for delete Already Open Student Record.
-    String delE_url = "http://172.19.111.216/DeleteEvent.php";
+    String delE_url = "http://192.168.1.108/DeleteEvent.php";
+    String canturl = "http://192.168.1.108/cant.php";
+    String interstedURL = "http://192.168.1.108/intersted.php";
 
     String finalResult ;
     HashMap<String,String> hashMap = new HashMap<>();
@@ -100,7 +102,7 @@ public class willgo extends AppCompatActivity {
             public void onClick(View view) {
 
                 // Calling Event delete method to delete current record using Event ID.
-                willcome(TempItem);
+                intersted(TempItem);
 
             }
         });
@@ -143,6 +145,38 @@ public class willgo extends AppCompatActivity {
 
 
 
+    public void intersted(final String EventID) {
+        class interstedClass extends AsyncTask<String, Void, String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog2 = ProgressDialog.show(willgo.this, "Loading Data", null, true, true);
+            }
+            @Override
+            protected void onPostExecute(String httpResponseMsg) {
+                super.onPostExecute(httpResponseMsg);
+                progressDialog2.dismiss();
+                Toast.makeText(willgo.this, "Thanks..", Toast.LENGTH_LONG).show();
+                //  finish();
+            }
+            @Override
+            protected String doInBackground(String... params) {
+                // Sending Event id.
+                hashMap.put("event_id", params[0]);
+                hashMap.put("email", params[1]);
+                hashMap.put("password", params[2]);
+                // hashMap.put("id", params[3]);
+
+                finalResult = httpParse.postRequest(hashMap, interstedURL);
+                return finalResult;
+            }
+        }
+        interstedClass interstclass = new interstedClass();
+        interstclass.execute(EventID,email,password);
+
+        // willcomeclass.execute(id);
+
+    }
 
 
 
@@ -177,7 +211,7 @@ public class willgo extends AppCompatActivity {
                 // Sending Event id.
                 hashMap.put("event_id", params[0]);
 
-                finalResult = httpParse.postRequest(hashMap, delE_url);
+                finalResult = httpParse.postRequest(hashMap, canturl);
 
                 return finalResult;
             }

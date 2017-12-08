@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:background="@drawable/loginbackground"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.hp.gep.firsthome"
+    android:weightSum="1">
+
+    <com.daimajia.slider.library.SliderLayout
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="203dp"
+        android:background="@drawable/loginbackground"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-26dp" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <ProgressBar
+                android:id="@+id/progressBarhome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="visible" />
+
+            <ListView
+                android:id="@+id/listviewhome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/progressBarhome"
+                android:layout_alignStart="@+id/progressBarhome"
+                android:layout_weight="0.95"
+                android:background="@drawable/loginbackground" />
+
+
+        </RelativeLayout>
+
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#B07D4A"
+            app:menu="@menu/navigation"
+            app:itemTextColor="#FFFACD"
+            />
+    </FrameLayout>
+
+
+</LinearLayout>

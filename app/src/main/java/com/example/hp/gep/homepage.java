@@ -1,5 +1,42 @@
 package com.example.hp.gep;
 
+
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import com.example.hp.gep.services.LocationMonitoringService;
+
+
+/**/
+
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +53,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -55,6 +93,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -63,6 +102,7 @@ import java.util.Map;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
+import static com.example.hp.gep.R.id.date;
 import static com.example.hp.gep.R.id.login_input_email;
 import static com.example.hp.gep.R.id.parent;
 
@@ -77,12 +117,13 @@ public class homepage extends mainpage {
     String FinalJSonObject;
    // private RequestQueue requestQueue ;
     //StringRequest request ;
-
+final String email=Email.getEmail();
     ProgressDialog pDialog;
     HttpService httpService = null;
     ListView eventListView;
     ProgressBar progressBar;
-    String allED_url = "http://192.168.1.108/AllEventsData.php";
+    String date_url="http://192.168.1.108/date.php";
+    String allED_url = "http://192.168.1.108/allFE.php";
     String created_url = "http://192.168.1.108/se.php";
     String birthday_url = "http://192.168.1.108/birthday.php";
     String graduation_url = "http://192.168.1.108/graduation.php";
@@ -93,41 +134,108 @@ public class homepage extends mainpage {
     String page = "createdEvents";
 
     List<String> eventsID = new ArrayList<>();
+    private static final String TAG = homepage.class.getSimpleName();
 
+    /**
+     * Code used in requesting runtime permissions.
+     */
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    Intent i = new Intent(getApplicationContext(),firsthome.class);
+                    //ntent.putExtra("ListViewValue", eventsID.get(position).toString());
+
+                    startActivity(i);
+                    // mTextMessage.setText(R.string.title_home);
+                    return true;
+                case R.id.location_on:
+                    //mTextMessage.setText(R.string.title_dashboard);
+                    shareMyLoc.setAllowence(1);
+enableTracker();
+                    return true;
+                case R.id.location_off:
+                    shareMyLoc.setAllowence(0);
+                    //onDestroy();
+                    //mTextMessage.setText(R.string.title_notifications);
+                    return true;
+                case R.id.create_event:
+                    Intent flip = new Intent(homepage.this, Main2Activity.class);
+                    flip.putExtra("email", email);
+
+                    startActivity(flip);
+
+                    return  true;
+
+            }
+            return false;
+        }
+
+    };
+    private boolean mAlreadyStartedService = false;
+   // private TextView mMsgView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame); //Remember this is the FrameLayout area within your activity_main.xml
         getLayoutInflater().inflate(R.layout.activity_homepage, contentFrameLayout);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setBackgroundColor(Color.parseColor("#B07D4A"));
+
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         //setContentView(R.layout.activity_homepage);
+        //mMsgView = (TextView) findViewById(R.id.msgView);
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+
+
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        String latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
+                        String longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
+
+                        if (latitude != null && longitude != null) {
+                            //mMsgView.setText(getString(R.string.msg_location_service_started) + "\n Latitude : " + latitude + "\n Longitude: " + longitude);
+                            userLocBroadCast.setLatitude(latitude);
+                            userLocBroadCast.setLongitude(longitude);
+                            //shareMyLoc.setAllowence(0);
+                            //String allow =Integer.toString(0);
+//new Background(getApplicationContext()).execute(latitude,longitude,"besan",allow);
+
+                            //enableTracker();
+
+                        }
+
+
+                    }
+
+
+
+                }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
+        );
+       // shareMyLoc.setAllowence(0);
+        //enableTracker();
+
+
+
 
         eventListView = (ListView) findViewById(R.id.listviewhome);
         final RequestQueue queue = Volley.newRequestQueue(this);
         //final RequestQueue queue = Volley.newRequestQueue(this);
-
-        final String email = getIntent().getStringExtra("email");
+//final String email=Email.getEmail();
+       final String email = getIntent().getStringExtra("email");
         final String password = getIntent().getStringExtra("password");
-        final String id = getIntent().getStringExtra("id");
-        //Toast.makeText(homepage.this,email,LENGTH_SHORT).show();
-        // Toast.makeText(homepage.this,password,LENGTH_SHORT).show();
-        // Toast.makeText(homepage.this,id,LENGTH_SHORT).show();
         progressBar = (ProgressBar) findViewById(R.id.progressBarhome);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.adfab);
-        fab.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Intent flip = new Intent(homepage.this, Main2Activity.class);
-                flip.putExtra("email", email);
-                flip.putExtra("password", password);
-                startActivity(flip);
-
-            }//onClick
-        });
 
 
-        //new GetHttpResponse(homepage.this).execute(page,email);
+
+
 
         //Adding ListView Item click Listener.
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -136,11 +244,13 @@ public class homepage extends mainpage {
 
                 // TODO Auto-generated method stub
 
-                Intent intent = new Intent(homepage.this, SingleEvent.class);
+                Intent intent = new Intent(homepage.this, willgo.class);
 
                 //Sending ListView clicked value using intent.
+                intent.putExtra("email", email);
+                intent.putExtra("password",password);
+                intent.putExtra("id",id);
                 intent.putExtra("ListViewValue", eventsID.get(position).toString());
-
                 startActivity(intent);
 
                 //Finishing current activity after open next activity.
@@ -164,24 +274,26 @@ public class homepage extends mainpage {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // if (mLastSpinnerPosition == i) {
-                //   return; //do nothing
-                //}
 
-                //  mLastSpinnerPosition = i;
-                //do the rest of your code now
-
-
-                AlertDialog.Builder b = new AlertDialog.Builder(homepage.this);
+                AlertDialog.Builder b = new AlertDialog.Builder(homepage.this,R.style.MyDialogTheme);
 
                 String t;
 
                 t = spin.getSelectedItem().toString();
+                if(t.equals("Interested in events")){
+
+                    //TODO
+
+
+
+
+                }
                 if (t.equals("Type")) {
                     // Toast.makeText(homepage.this, "TYPE " , Toast.LENGTH_SHORT).show();
 
-                    b.setTitle("TYPE");
+                    b.setTitle(Html.fromHtml("<font color='#FFFACD'>Type</font>"));
                     String[] types = {"IT", "Education", "Graduation", "Birthday", "Wedding", "Other"};
+
                     b.setItems(types, new DialogInterface.OnClickListener() {
 
                         @Override
@@ -216,99 +328,29 @@ public class homepage extends mainpage {
                 }
                 if (t.equals("Created events")) {
 
-                    Toast.makeText(homepage.this, "created ", Toast.LENGTH_SHORT).show();
+
+                  Toast.makeText(homepage.this, "created ", Toast.LENGTH_SHORT).show();
 
                     page = "createdEvents";
-                    final ArrayList array =new ArrayList<Event>();
-                    StringRequest postRequest = new StringRequest(Request.Method.POST, created_url,
-                            new Response.Listener<String>()
-                            {
-                                @Override
-                                public void onResponse(String response) {
-                                    Event evento =new Event();
-                                    Toast.makeText(homepage.this, response, Toast.LENGTH_SHORT).show();
-                                    String[] data = response.split(",");
-                                    Log.d("raslandata", data.toString());
-                                    if (data.length>0) {
-                                        for (int i = 0; i < data.length; i++) {
-
-                                            Toast.makeText(homepage.this, data[i], Toast.LENGTH_SHORT).show();
-                                           // evento.event_name
-                                            evento.event_name = data[0];
-                                          evento.event_date = data[1];
-
-/*for(int j=0;j<response.length();j++){
-
-
-    array.add(evento);
-
-
-}*/
-
-                                            //result.append(data[i]);
-                                        }
-                                        array.add(evento);
-
-
-
-                                        progressBar.setVisibility(View.GONE);
-                                        eventListView.setVisibility(View.VISIBLE);
-                                        // alertDialog.setMessage(result);
-                                        //alertDialog.show();
-                                        if (array != null) {
-                                            ListAdapter adapter = new ListAdapter(array, homepage.this);
-                                            eventListView.setAdapter(adapter);
-                                        }
-
-                                    }
-                                    else {
-                                        Toast.makeText(homepage.this, "can't insert into array", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            },
-                            new Response.ErrorListener()
-                            {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    // error
-                                    // Log.d("Error.Response", String.valueOf(error));
-
-                                    Toast.makeText(homepage.this, "hhhhh ", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                    ) {
-                        @Override
-                        protected Map<String, String> getParams()
-                        {
-                            Map<String, String>  params = new HashMap<String, String>();
-                            params.put("email",email.toString());
-                            return params;
-                        }
-                    };
-                    queue.add(postRequest);
-
-
-                   // new GetResponse(homepage.this).execute(page);
-                    // httpService.AddParam("email",email);
-                    //onCretedCall("email");//email.trim());
-                   /* Intent intent = new Intent(homepage.this,allEvents.class);
+                    Intent intent = new Intent(homepage.this,allEvents.class);
 
                     //Sending ListView clicked value using intent.
                     intent.putExtra("email",email);
 
-                    startActivity(intent);*/
-
-                    //Finishing current activity after open next activity.
-                    //HttpWebCallFunction httpWebCallFunction=new HttpWebCallFunction(homepage.this);
-                    //httpWebCallFunction.execute(email);
-                    //new GetHttpResponse(homepage.this).execute(page);
-                    // httpService = new HttpService(created_url);
+                    startActivity(intent);
                 }
 
                 if (t.equals("All")) {
-                    page = "AllEventsData";
-                    new GetHttpResponse(homepage.this).execute(page, email);
-                    //httpService = new HttpService(allED_url);
+
+                  showEvent showEvent=new showEvent();
+                    showEvent.show("all");
+
+
+
+                }
+                if(t.equals("Date")){
+
+                    sortbyDate();
                 }
 
 
@@ -317,9 +359,66 @@ public class homepage extends mainpage {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                //httpService = new HttpService(allED_url);
-                // finish();
-                //startActivity(getIntent());
+                final ArrayList array =new ArrayList<Event>();
+                StringRequest postRequest = new StringRequest(Request.Method.POST, allED_url,
+                        new Response.Listener<String>()
+                        {
+                            @Override
+                            public void onResponse(String response) {
+                                Toast.makeText(homepage.this, response, Toast.LENGTH_SHORT).show();
+                                //eventsID.clear();
+                                response+=",";
+                                String[] data = response.split(",");
+                                if (data.length>0) {
+                                    for (int i = 0; i < data.length ; i+=2) {
+                                        Event evento =new Event();
+                                        Toast.makeText(homepage.this, data[i], Toast.LENGTH_SHORT).show();
+                                        // evento.event_name
+                                        evento.event_name = data[i];
+                                        evento.event_date = data[i+1];
+
+                                        //result.append(data[i])
+                                        array.add(evento);
+
+                                    }
+
+
+
+                                    progressBar.setVisibility(View.GONE);
+                                    eventListView.setVisibility(View.VISIBLE);
+                                    // alertDialog.setMessage(result);
+                                    //alertDialog.show();
+                                    if (array != null) {
+                                        ListAdapter adapter = new ListAdapter(array, getApplicationContext());
+                                        eventListView.setAdapter(adapter);
+                                    }
+
+                                }
+                                else {
+                                    Toast.makeText(homepage.this, "can't insert into array", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener()
+                        {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // error
+                                // Log.d("Error.Response", String.valueOf(error));
+
+                                Toast.makeText(homepage.this, "hhhhh ", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                ) {
+                    @Override
+                    protected Map<String, String> getParams()
+                    {
+                        Map<String, String>  params = new HashMap<String, String>();
+                        params.put("email",email.toString());
+                        return params;
+                    }
+                };
+                queue.add(postRequest);
             }
         });
 
@@ -332,163 +431,39 @@ public class homepage extends mainpage {
     }//onCreate
 
 
+public void sortbyDate(){
+    final Calendar myCalendar = Calendar.getInstance();
+    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
-    /* public class HttpWebCallFunction extends AsyncTask<String, Void, String> {
-         // String pge="createdEvents";
-          Context context;
-          android.app.AlertDialog alertDialog;
-          //constructor
-          HttpWebCallFunction(Context ctx){
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            int y=myCalendar.get(Calendar.YEAR);
+int m=myCalendar.get(Calendar.MONTH)+1;
+            int d=myCalendar.get(Calendar.DAY_OF_MONTH);
+String event_date =y+"-"+m+"-"+d;
+            Toast.makeText(homepage.this,event_date,Toast.LENGTH_SHORT).show();
+showeventsbyDate(event_date);
+        }
 
-              context=ctx;
-          }
-          @Override
-          protected String doInBackground(String... params) {
-//extract epage from params
+    };
 
-              String eventInfo_url = "http://192.168.1.35/createdEvents.php";
+    new DatePickerDialog(homepage.this, date, myCalendar
+            .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+            myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+    //int m =myCalendar.get(Calendar.MONTH)+1;
 
-              //posting
-              try {
-                 ArrayList eventls ;//=new ArrayList<Event>();
-                  String email = params[0];
-                  URL url = new URL(eventInfo_url);
-                  HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                  httpURLConnection.setRequestMethod("POST");
-                  httpURLConnection.setDoOutput(true);
-                  httpURLConnection.setDoInput(true);
-                  OutputStream outputStream = httpURLConnection.getOutputStream();
-                  BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                  String post_data = URLEncoder.encode("email","UTF-8")+"="+URLEncoder.encode(email,"UTF-8");
-                  bufferedWriter.write(post_data);
-                  bufferedWriter.flush();
-                  bufferedWriter.close();
-                  outputStream.close();
-                  InputStream inputStream = httpURLConnection.getInputStream();
-                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso_8859-1"));
-
-                  String line = "";
-                  String result = "";
-                  while ((line = bufferedReader.readLine()) != null) {
-                      result += line;
-                  }
-
-                  bufferedReader.close();
-                  inputStream.close();
-                  httpURLConnection.disconnect();
-                  String JSonresult = httpService.getResponse();
-                  try {
-                      JSONObject jsonObject = new JSONObject(JSonresult);
-                      Log.d("raslanid", jsonObject.getString("id"));
-                      Log.d("{Result}", JSonresult);
-                      if (JSonresult != null) {
-                          JSONArray jsonArray = null;
-                          try {
-
-
-
-                              jsonArray = new JSONArray(JSonresult);
-
-                              JSONObject object;
-
-                              //YUKUJTYJTYJTYJ UNDER
-                              eventsID.clear();
-                              //JSONArray array;
-                              Event evento;
-                              eventls = new ArrayList<Event>();
-                              for (int i = 0; i < jsonArray.length(); i++) {
-                                  evento = new Event();
-                                  object = jsonArray.getJSONObject(i);
-                                  //adding event id to eventsID
-                                  eventsID.add(object.getString("event_id").toString());
-
-                                  //adding event location
-                                  evento.event_name = object.getString("event_name").toString();
-                                  evento.event_date = object.getString("event_date").toString();
-
-
-                                  eventls.add(evento);
-                              }
-                          } catch (JSONException e) {
-                              // TODO Auto-generated catch block
-                              e.printStackTrace();
-                          }
-                      }
-                  //} //else {
-                      makeText(context, httpService.getErrorMessage(), LENGTH_SHORT).show();
-                  //}
-              } catch (Exception e) {
-                  // TODO Auto-generated catch block
-                  e.printStackTrace();
-              }
-              return null;
-
-
-                  } catch (UnsupportedEncodingException e) {
-                  e.printStackTrace();
-              } catch (ProtocolException e) {
-                  e.printStackTrace();
-              } catch (MalformedURLException e) {
-                  e.printStackTrace();
-              } catch (IOException e) {
-                  e.printStackTrace();
-              }
-
-              return null;
-
-              }
-
-              //catch(MalformedURLException e){
-                //  e.printStackTrace();
-              //}catch(IOException e){
-                //  e.printStackTrace();
-              //}
+    //Toast.makeText(homepage.this,myCalendar.get(Calendar.YEAR)+"-"+m+"-"+myCalendar.get(Calendar.DAY_OF_MONTH),Toast.LENGTH_SHORT).show();
 
 
 
 
+}
 
-             // return null;
-
-          //}
-
-          @Override
-          protected void onPreExecute() {
-              alertDialog=new android.app.AlertDialog.Builder(context).create();
-              alertDialog.setTitle("posting email status");
-
-          }
-
-          @Override
-          protected void onPostExecute(String result) {
-             alertDialog.setMessage(result);
-             alertDialog.show();
-              progressBar.setVisibility(View.GONE);
-              eventListView.setVisibility(View.VISIBLE);
-              // alertDialog.setMessage(result);
-              //alertDialog.show();
-             /*if (e != null) {
-                  ListAdapter adapter = new ListAdapter(e, context);
-                  eventListView.setAdapter(adapter);
-
-              //new GetResponse(homepage.this).execute("createdEvents");
-              // homepage hp= new homepage();
-              // hp.ANY();
-
-          }}
-
-          @Override
-          protected void onProgressUpdate(Void... values) {
-              super.onProgressUpdate(values);
-          }
-
-
-
-
-
-
-
-      }*/
 
 
     public void onITRequested() {
@@ -502,11 +477,7 @@ public class homepage extends mainpage {
         page = "education";
         new GetHttpResponse(homepage.this).execute(page);
     }
-    /*public void onCretedCall(String email){
-        showCreatedEvents showCreatedEvents= new showCreatedEvents(homepage.this);
-        showCreatedEvents.execute(email);
 
-    }*/
 
     public void onGraduationRequested() {
         page = "graduation";
@@ -533,11 +504,92 @@ public class homepage extends mainpage {
         new GetHttpResponse(homepage.this).execute(page);
 
     }
-  /*  public void ANY(){
-        page = "createdEvents";
-        new GetHttpResponse(homepage.this).execute(page);
 
-    }*/
+
+    public void showeventsbyDate(final String date){
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        final String email=getIntent().getStringExtra("email");
+        final ArrayList array =new ArrayList<Event>();
+        StringRequest postRequest = new StringRequest(Request.Method.POST,date_url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(homepage.this, response, Toast.LENGTH_SHORT).show();
+
+                        eventsID.clear();
+
+                        response+=",";
+                        //log.d("besan",response);
+                        Toast.makeText(homepage.this,response,Toast.LENGTH_SHORT).show();
+
+                        String[] data = response.split(",");
+                        if (data.length>0) {
+                            for (int i = 0; i < data.length ; i+=3) {
+                                Event evento =new Event();
+                                Toast.makeText(homepage.this, data[i], Toast.LENGTH_SHORT).show();
+                                // evento.event_name
+                                evento.event_name = data[i];
+
+                                evento.event_date = data[i+1];
+
+
+                                //result.append(data[i])
+                                array.add(evento);
+                                eventsID.add(data[i+2]);
+                            }
+
+                            progressBar.setVisibility(View.GONE);
+                            eventListView.setVisibility(View.VISIBLE);
+                            // alertDialog.setMessage(result);
+                            //alertDialog.show();
+                            if (array != null) {
+                                // Toast.makeText(homepage.this,"fdfghnbvc",Toast.LENGTH_LONG).show();
+                                ListAdapter adapter = new ListAdapter(array, getApplicationContext());
+                                eventListView.setAdapter(adapter);
+                            }
+
+                        }
+                        else {
+                            Toast.makeText(homepage.this, "can't insert into array", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        // Log.d("Error.Response", String.valueOf(error));
+
+                        Toast.makeText(homepage.this, "hhhhh ", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                if(Email.getANum()==0){
+                    String email=Email.getEmail();
+                   // params.put("email",email.toString());
+                    params.put("event_date",date);
+                    return params;
+                }
+                else
+                {
+                    String email=getIntent().getStringExtra("email");
+                   // params.put("email",email.toString());
+                    params.put("event_date",date);
+                    return params;}
+            }
+        };
+        queue.add(postRequest);
+
+
+
+    }
+
 
     // JSON parse class started from here.
     private class GetHttpResponse extends AsyncTask<String, Void, String> {
@@ -568,22 +620,12 @@ public class homepage extends mainpage {
             //passing http url to httpservice class
 
 
-            //String page=params[0];
-            // HttpService httpService = null;
-            //if (page.equals("createdEvents")) {
-            // httpService = new HttpService(created_url);
-            //}
-            //String email=params[1];
-
             if (page.equals("createdEvents")) {
 
-//JSonresult=FinalJSonObject;
-                //httpService.responseCode = 200;
+
                 httpService = new HttpService(created_url);
 
-                //JSonresult=FinalJSonObject;
 
-                //Toast.makeText(homepage.this,email , Toast.LENGTH_SHORT).show();
             }
 
 
@@ -626,11 +668,7 @@ public class homepage extends mainpage {
 
 
             try {
-                if(page.equals("createdEvents")){
-                   // final String email = getIntent().getStringExtra("email");
-                    //httpService.AddParam("email",email);
-                    //httpService.ExecuteGetRequest();
-                }
+
                httpService.ExecutePostRequest();
 
                 //String email=params[1];
@@ -707,143 +745,382 @@ public class homepage extends mainpage {
         }
     }
 
-/*private class GetResponse extends AsyncTask<String, Void, String> {
-    public Context context;
-    // AlertDialog alertDialog;
-    String JSonresult;
-
-    List<Event> eventList;
-    public GetResponse(Context context) {
-        this.context = context;
-    }
-
-    @Override
-    protected void onPreExecute() {
-
-        //alertDialog=new AlertDialog.Builder(context).create();
-        //alertDialog.setTitle("status");
-        Toast.makeText(homepage.this, "onPreExecute!",
-                LENGTH_SHORT).show();
-
-        super.onPreExecute();
-
-    }
-
-    @Override
-    protected String doInBackground(String... params) {
-
-            //httpService.responseCode = 200;
-            httpService = new HttpService(created_url);
-
-        try {
-            httpService.ExecutePostRequest();
-
-            if (httpService.getResponseCode() == 200) {
-                JSonresult = httpService.getResponse();
-                //FERGERG4TRTRG  UNDER
-                Log.d("{Result}", JSonresult);
-                Toast.makeText(getApplicationContext()
-                        , "doInBackGround!",
-                        LENGTH_SHORT).show();
-                if (JSonresult != null) {
-                    Toast.makeText(getApplicationContext(), JSonresult, Toast.LENGTH_LONG).show();
-                    JSONArray jsonArray = null;
-                    try {
-                        jsonArray = new JSONArray();
-                        JSONParser parser = new JSONParser();
-                        //JSONObject json =
-                        JSONObject object =new JSONObject();
-                        //JSonresult, Event.class);
-                                //(JSONObject) parser.parse(FinalJSonObject);
-                        String eventsForId = object.getString("id");
-                        Log.d("eventsForId", eventsForId);
-                        eventsID.clear();
-                        //JSONArray array;
-                        Event evento;
-                        eventList = new ArrayList<Event>();
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            evento = new Event();
-                            object = jsonArray.getJSONObject(i);
-                            //adding event id to eventsID
-                            eventsID.add(object.getString("event_id").toString());
-
-                            //adding event location
-                            evento.event_name = object.getString("event_name").toString();
-                            evento.event_date = object.getString("event_date").toString();
 
 
-                            eventList.add(evento);
+
+    public class showEvent{
+
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String url;
+
+        public void show(String selection){
+            if(selection=="created"){
+                url=created_url;
+            }
+            if(selection=="all"){
+                url=allED_url;
+            }
+
+            final String email=Email.getEmail();
+            final ArrayList array =new ArrayList<Event>();
+            StringRequest postRequest = new StringRequest(Request.Method.POST,url,
+                    new Response.Listener<String>()
+                    {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(homepage.this, response, Toast.LENGTH_SHORT).show();
+
+                            eventsID.clear();
+
+                            response+=",";
+                            String[] data = response.split(",");
+                            if (data.length>0) {
+                                for (int i = 0; i < data.length ; i+=3) {
+                                    Event evento =new Event();
+                                    Toast.makeText(homepage.this, data[i], Toast.LENGTH_SHORT).show();
+                                    // evento.event_name
+                                    evento.event_name = data[i];
+
+                                    evento.event_date = data[i+1];
+
+
+                                    //result.append(data[i])
+                                    array.add(evento);
+                                    eventsID.add(data[i+2]);
+                                }
+
+                                progressBar.setVisibility(View.GONE);
+                                eventListView.setVisibility(View.VISIBLE);
+                                // alertDialog.setMessage(result);
+                                //alertDialog.show();
+                                if (array != null) {
+                                   // Toast.makeText(homepage.this,"fdfghnbvc",Toast.LENGTH_LONG).show();
+                                    ListAdapter adapter = new ListAdapter(array, getApplicationContext());
+                                    eventListView.setAdapter(adapter);
+                                }
+
+                            }
+                            else {
+                                Toast.makeText(homepage.this, "can't insert into array", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        Log.d("raslan", "error");
-                        e.printStackTrace();
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // error
+                            // Log.d("Error.Response", String.valueOf(error));
+
+                            Toast.makeText(homepage.this, "hhhhh ", Toast.LENGTH_SHORT).show();
+                        }
                     }
+            ) {
+                @Override
+                protected Map<String, String> getParams()
+                {
+                    Map<String, String>  params = new HashMap<String, String>();
+                    String email=Email.getEmail();
+                    params.put("email",email.toString());
+
+                    if(Email.getANum()==0||Email.getANum()!=0){
+                         email=Email.getEmail();
+                        params.put("email",email.toString());
+                        return params;
+                    }
+                    else
+                    {
+                         email=Email.getEmail();
+                    params.put("email",email.toString());
+                    return params;}
                 }
+            };
+            queue.add(postRequest);
+
+
+
+        }
+
+
+
+    }
+
+public void enableTracker(){
+
+    String shareLoc =Integer.toString(shareMyLoc.getAllowence());
+    Background background =new Background(this);
+    background.execute(userLocBroadCast.getLatitude(),userLocBroadCast.getLongitude(),Email.getEmail(),shareLoc);
+
+}
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        startStep1();
+    }
+
+
+    /**
+     * Step 1: Check Google Play services
+     */
+    private void startStep1() {
+
+        //Check whether this user has installed Google play service which is being used by Location updates.
+        if (isGooglePlayServicesAvailable()) {
+
+            //Passing null to indicate that it is executing for the first time.
+            startStep2(null);
+
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.no_google_playservice_available, Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    /**
+     * Step 2: Check & Prompt Internet connection
+     */
+    private Boolean startStep2(DialogInterface dialog) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (activeNetworkInfo == null || !activeNetworkInfo.isConnected()) {
+            promptInternetConnect();
+            return false;
+        }
+
+
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+
+        //Yes there is active internet connection. Next check Location is granted by user or not.
+
+        if (checkPermissions()) { //Yes permissions are granted by the user. Go to the next step.
+            startStep3();
+        } else {  //No user has not granted the permissions yet. Request now.
+            requestPermissions();
+        }
+        return true;
+    }
+
+    /**
+     * Show A Dialog with button to refresh the internet state.
+     */
+    private void promptInternetConnect() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(homepage.this);
+        builder.setTitle(R.string.title_alert_no_intenet);
+        builder.setMessage(R.string.msg_alert_no_internet);
+
+        String positiveText = getString(R.string.btn_label_refresh);
+        builder.setPositiveButton(positiveText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                        //Block the Application Execution until user grants the permissions
+                        if (startStep2(dialog)) {
+
+                            //Now make sure about location permission.
+                            if (checkPermissions()) {
+
+                                //Step 2: Start the Location Monitor Service
+                                //Everything is there to start the service.
+                                startStep3();
+                            } else if (!checkPermissions()) {
+                                requestPermissions();
+                            }
+
+                        }
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    /**
+     * Step 3: Start the Location Monitor Service
+     */
+    private void startStep3() {
+
+        //And it will be keep running until you close the entire application from task manager.
+        //This method will executed only once.
+
+        if (!mAlreadyStartedService ) {
+
+            //mMsgView.setText(R.string.msg_location_service_started);
+
+            //Start location sharing service to app server.........
+            Intent intent = new Intent(this, LocationMonitoringService.class);
+            startService(intent);
+            mAlreadyStartedService = true;
+
+            // callBackground(userLocBroadCast.getLatitude(),userLocBroadCast.getLongitude());
+            //Ends................................................
+        }
+    }
+
+   /* private void callBackground(String latitude,String longitude) {
+        Background background=new Background(getApplicationContext());
+
+        background.execute(latitude,longitude, Email.getEmail());
+
+    }*?
+
+    /**
+     * Return the availability of GooglePlayServices
+     */
+    public boolean isGooglePlayServicesAvailable() {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if (status != ConnectionResult.SUCCESS) {
+            if (googleApiAvailability.isUserResolvableError(status)) {
+                googleApiAvailability.getErrorDialog(this, status, 2404).show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Return the current state of the permissions needed.
+     */
+    private boolean checkPermissions() {
+        int permissionState1 = ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+        int permissionState2 = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        return permissionState1 == PackageManager.PERMISSION_GRANTED && permissionState2 == PackageManager.PERMISSION_GRANTED;
+
+    }
+
+    /**
+     * Start permissions requests.
+     */
+    private void requestPermissions() {
+
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+        boolean shouldProvideRationale2 =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION);
+
+
+        // Provide an additional rationale to the img_user. This would happen if the img_user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale || shouldProvideRationale2) {
+            Log.i(TAG, "Displaying permission rationale to provide additional context.");
+            showSnackbar(R.string.permission_rationale,
+                    android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            ActivityCompat.requestPermissions(homepage.this,
+                                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                        }
+                    });
+        } else {
+            Log.i(TAG, "Requesting permission");
+            // Request permission. It's possible this can be auto answered if device policy
+            // sets the permission in a given state or the img_user denied the permission
+            // previously and checked "Never ask again".
+            ActivityCompat.requestPermissions(homepage.this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+
+    /**
+     * Shows a {@link Snackbar}.
+     *
+     * @param mainTextStringId The id for the string resource for the Snackbar text.
+     * @param actionStringId   The text of the action item.
+     * @param listener         The listener associated with the Snackbar action.
+     */
+    private void showSnackbar(final int mainTextStringId, final int actionStringId,
+                              View.OnClickListener listener) {
+        Snackbar.make(
+                findViewById(android.R.id.content),
+                getString(mainTextStringId),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(actionStringId), listener).show();
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionResult");
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length <= 0) {
+                // If img_user interaction was interrupted, the permission request is cancelled and you
+                // receive empty arrays.
+                Log.i(TAG, "User interaction was cancelled.");
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                Log.i(TAG, "Permission granted, updates requested, starting location updates");
+                startStep3();
+
             } else {
-                makeText(context, httpService.getErrorMessage(), LENGTH_SHORT).show();
+                // Permission denied.
+
+                // Notify the img_user via a SnackBar that they have rejected a core permission for the
+                // app, which makes the Activity useless. In a real app, core permissions would
+                // typically be best requested during a welcome-screen flow.
+
+                // Additionally, it is important to remember that a permission might have been
+                // rejected without asking the img_user for permission (device policy or "Never ask
+                // again" prompts). Therefore, a img_user interface affordance is typically implemented
+                // when permissions are denied. Otherwise, your app could appear unresponsive to
+                // touches or interactions which have required permissions.
+                showSnackbar(R.string.permission_denied_explanation,
+                        R.string.settings, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Build intent that displays the App settings screen.
+                                Intent intent = new Intent();
+                                intent.setAction(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package",
+                                        BuildConfig.APPLICATION_ID, null);
+                                intent.setData(uri);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        });
             }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
-        return null;
     }
+
 
     @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
+    public void onDestroy() {
+
+
+        //Stop location sharing service to app server.........
+
+        stopService(new Intent(this, LocationMonitoringService.class));
+        mAlreadyStartedService = false;
+        //Ends................................................
+
+
+        super.onDestroy();
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-        Toast.makeText(homepage.this, "browse your events!",
-                LENGTH_SHORT).show();
-        Toast.makeText(homepage.this, JSonresult, Toast.LENGTH_LONG).show();
-        try {
-            JSONObject object =new JSONObject(JSonresult);
-        //JSonresult, Event.class);
-        //(JSONObject) parser.parse(FinalJSonObject);
-                JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(JSonresult);
-            String eventsForId = null;
-            eventsForId = object.getString("id");
-            Log.d("eventsForId", eventsForId);
-            Log.d("JSONOBJECT", jsonObject.toString());
-            JSONArray jsonArray = object.getJSONArray(JSonresult);
-            Event evento;
-            eventList = new ArrayList<Event>();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                evento = new Event();
-                object = jsonArray.getJSONObject(i);
-                //adding event id to eventsID
-                eventsID.add(object.getString("event_id").toString());
 
-                //adding event location
-                evento.event_name = object.getString("event_name").toString();
-                evento.event_date = object.getString("event_date").toString();
-
-
-                eventList.add(evento);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // alertDialog.setMessage("ggtgtg");
-        // alertDialog.show();
-        progressBar.setVisibility(View.GONE);
-        eventListView.setVisibility(View.VISIBLE);
-        // alertDialog.setMessage(result);
-        //alertDialog.show();
-        if (eventList != null) {
-            ListAdapter adapter = new ListAdapter(eventList, context);
-            eventListView.setAdapter(adapter);
-        }
-        //      alertDialog.setMessage(result);
-        //    alertDialog.show();
-    }
-
-}*/
 
 
 

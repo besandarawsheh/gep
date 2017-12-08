@@ -16,22 +16,32 @@ import android.app.AlertDialog;
         import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-        import org.json.simple.parser.JSONParser;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.simple.parser.JSONParser;
 
         import org.json.JSONArray;
         import org.json.JSONException;
         import org.json.JSONObject;
 
         import java.util.ArrayList;
-        import java.util.List;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-        import static android.widget.Toast.*;
+import static android.widget.Toast.*;
 
 public class friendsRequests extends mainpage {
 
     ListView eventListView;
     ProgressBar progressBar;
-    String allED_url = "http://192.168.1.108/fRequests.php";
+    String allF_url = "http://192.168.1.108/fRequests.php";
     List<String> FRID = new ArrayList<>();
 
     @Override
@@ -46,9 +56,92 @@ public class friendsRequests extends mainpage {
         eventListView = (ListView) findViewById(R.id.listview1);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        //String email =getIntent().getStringExtra("email");
+        eventListView = (ListView) findViewById(R.id.listview1);
+        final RequestQueue queue = Volley.newRequestQueue(this);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        final String email =getIntent().getStringExtra("email");
 
-        new GetHttpResponse(friendsRequests.this).execute();
+        final ArrayList array =new ArrayList<friendData>();
+        StringRequest postRequest = new StringRequest(Request.Method.POST,allF_url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(friendsRequests.this, response, Toast.LENGTH_SHORT).show();
+                        //eventsID.clear();
+                        response+=",";
+                        String[] data = response.split(",");
+                        //eventsID.clear();
+                        if (data.length>0) {
+                            for (int i = 0; i < data.length ; i+=3) {
+                                friendData myRfriend =new friendData();
+                                Toast.makeText(friendsRequests.this, data[i], Toast.LENGTH_SHORT).show();
+                                // evento.event_name
+
+                               myRfriend.Name = data[i];
+                                myRfriend.email = data[i+1];
+                                myRfriend.gender = data[i+2];
+                                //result.append(data[i])
+                                array.add(myRfriend);
+                               // eventsID.add(data[i+2]);
+                            }
+
+
+
+                            progressBar.setVisibility(View.GONE);
+                            eventListView.setVisibility(View.VISIBLE);
+                            // alertDialog.setMessage(result);
+                            //alertDialog.show();
+                            if (array != null) {
+                                fRequestAdapter adapter = new fRequestAdapter(array, friendsRequests.this);
+                                eventListView.setAdapter(adapter);
+                            }
+
+                        }
+                        else {
+                            Toast.makeText(friendsRequests.this, "can't insert into array", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        // Log.d("Error.Response", String.valueOf(error));
+
+                        Toast.makeText(friendsRequests.this, "hhhhh ", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                if(Email.getANum()!=0){
+                    String email=Email.getEmail();
+                    params.put("email",email.toString());
+                    return params;
+                }
+                else if(Email.getANum()!=0)
+                {
+                    String email=getIntent().getStringExtra("email");
+                    params.put("email",email.toString());
+                    return params;}
+
+                else{ String email=Email.getEmail();
+                    params.put("email",email.toString());
+                    return params;}
+                //params.put("email",email.toString());
+                //return params;
+            }
+        };
+        queue.add(postRequest);
+
+
+
+
+
 
 
         //Adding ListView Item click Listener.
@@ -111,7 +204,7 @@ public class friendsRequests extends mainpage {
     }
 
     // JSON parse class started from here.
-    private class GetHttpResponse extends AsyncTask<Void,Void,Void> {
+    /*private class GetHttpResponse extends AsyncTask<Void,Void,Void> {
         public Context context;
         // AlertDialog alertDialog;
         String JSonresult;
@@ -212,7 +305,7 @@ public class friendsRequests extends mainpage {
             //    alertDialog.show();
         }
 
-    }
+    }*/
 
 }
 

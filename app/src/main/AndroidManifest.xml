@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.hp.gep">
+    package="com.example.hp.gep"
+    android:versionCode="1"
+    android:versionName="1.0">
 
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="21" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+    <!-- This permission is need to check the internet connection state ! -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="General Event Planner"
+        android:icon="@mipmap/biglogo"
+        android:label="GEP"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAfX0ZO36kXwENAHPW2PFCOWPuShaWNMcM" />
+
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,24 +37,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Main2Activity" />
+        <activity
+            android:name=".Main2Activity"
+            android:label="Create new Evevnt" />
         <activity android:name=".Main3Activity" />
-        <activity android:name=".allEvents" />
+        <activity
+            android:name=".allEvents"
+            android:label="Browse Events" />
         <activity android:name=".SingleEvent" />
         <activity android:name=".editActivity" />
-        <activity android:name=".birthday" />
+        <activity
+            android:name=".birthday"
+            android:label="Birthday" />
         <activity android:name=".bdLVAdapter" />
         <activity android:name=".MainActivity" />
         <activity android:name=".mainpage" />
-        <activity android:name=".RegisterActivity" />
+        <activity
+            android:name=".RegisterActivity"
+            android:label="Registration" />
         <activity android:name=".UserActivity" />
-        <activity android:name=".homepage" />
+        <activity
+            android:name=".homepage"
+            android:label="Browse Evevnts" />
         <activity
             android:name=".eventForm"
             android:label="@string/title_activity_event_form"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Friend"
+            android:label="Search for Friends"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,9 +86,29 @@
             android:value=".Friend" />
 
         <activity android:name=".userInteract" />
-        <activity android:name=".willgo" />
-        <activity android:name=".friendsRequests" />
-        <activity android:name=".fRequestAdapter"></activity>
+        <activity
+            android:name=".willgo"
+            android:label="Send Response" />
+        <activity
+            android:name=".friendsRequests"
+            android:label="Friend Requests" />
+        <activity android:name=".userLoc" />
+        <activity android:name=".spinall" />
+        <activity android:name=".edu" />
+        <activity
+            android:name=".listOfFriends"
+            android:label="My Friends" />
+        <activity android:name=".chat" />
+
+        <service
+            android:name=".services.LocationMonitoringService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".LocTracker" />
+        <activity
+            android:name=".firsthome"
+            android:label="Home"></activity>
     </application>
 
 </manifest>

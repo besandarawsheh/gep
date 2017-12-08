@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.MenuItem;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class mainpage extends AppCompatActivity {
@@ -56,7 +57,10 @@ public class mainpage extends AppCompatActivity {
                             // add navigation drawer item onclick method here
                             break;
                         case R.id.nav_home:
+
                             Intent intent= new Intent(getApplicationContext(), homepage.class);
+                           Email.setANum(0);
+
                             startActivity(intent);
                             mDrawerLayout.closeDrawers();
                             //Do some thing here
@@ -70,7 +74,7 @@ public class mainpage extends AppCompatActivity {
                             // add navigation drawer item onclick method here
                             break;
                         case R.id.nav_FRList:
-                            Intent l= new Intent(getApplicationContext(), homepage.class);
+                            Intent l= new Intent(getApplicationContext(), listOfFriends.class);
                             startActivity(l);
                             mDrawerLayout.closeDrawers();
                             //Do some thing here

@@ -1,30 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/nav_home"
-        android:title="Home"
+    <group android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_home"
+            android:title="Home"
 
-        />
-    <item android:id="@+id/nav_event"
-        android:title="Event"
-        />
-    <item android:id="@+id/nav_to_do_list"
-        android:title="To Do List"
-        />
+            />
+    </group>
 
-    <item android:id="@+id/nav_friend"
-        android:title="Friend List"
-        />
+    <group android:id="@+id/group2"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_event"
+            android:title="Event"
+            />
+    </group>
 
-    <item android:id="@+id/nav_editprofile"
-        android:title="Edit Profile"
-        />
-    <item android:id="@+id/nav_Logout"
-        android:title="Logout"
-        />
-    <item android:id="@+id/nav_frRequest"
-        android:title="Friend Requests"
-        />
-    <item android:id="@+id/nav_FRList"
-        android:title="List"
-        />
+    <group android:id="@+id/group3"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_to_do_list"
+            android:title="To Do List"
+            />
+    </group>
+    <group android:id="@+id/group4"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_FRList"
+            android:title=" Friend List"
+            />
+
+    </group>
+
+    <group android:id="@+id/group5"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_frRequest"
+            android:title="Friend Requests"
+            />
+    </group>
+    <group android:id="@+id/group6"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_friend"
+            android:title="Search for new Friends"
+            />
+    </group>
+    <group android:id="@+id/group7"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_editprofile"
+            android:title="Edit Profile"
+            />
+    </group>
+    <group android:id="@+id/group8"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_Logout"
+            android:title="Logout"
+            />
+    </group>
+
+
+
+
+
+
+
+
+
+
 </menu>

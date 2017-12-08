@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "430676809711",
+    "firebase_url": "https://gep-project.firebaseio.com",
+    "project_id": "gep-project",
+    "storage_bucket": "gep-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430676809711:android:35327c28533551cd",
+        "android_client_info": {
+          "package_name": "com.example.hp.gep"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "430676809711-b6jvoqhqihubm3shmdu4p4l8a82mm2b0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsFkRv9-C73hqPOIX_7M1VgwCfXJGbsS8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

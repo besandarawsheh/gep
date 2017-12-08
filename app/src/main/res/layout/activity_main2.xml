@@ -1,180 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main2"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:background="@color/BlueGrey"
+    android:background="@drawable/loginbackground"
 
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.hp.gep.Main2Activity">
-    <TextView
-        android:text="Initiate Event Information!!"
-        android:layout_width="wrap_content"
+    tools:context="com.example.hp.gep.Main2Activity"
+    android:weightSum="1">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="147dp"
+        android:layout_weight="1.00">
+
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/spinner3"
+            android:layout_toStartOf="@+id/spinner3"
+            android:background="@drawable/borders"
+            android:text="Event Name :"
+            android:textSize="18sp"
+            android:layout_toLeftOf="@+id/spinner3" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner3">
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/frameLayout2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/borders"
+            android:text="Event Type   :"
+            android:textSize="18sp" />
+
+        <Spinner
+
+            android:id="@+id/spinner3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView12"
+            android:layout_alignParentEnd="true"
+            android:popupBackground="@drawable/loginbackground"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/textView12"
+            android:layout_toRightOf="@+id/textView12" />
+
+        <ImageView
+            android:id="@+id/imageView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView6"
+            android:layout_alignEnd="@+id/imageView6"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/imageView6"
+            android:background="@drawable/borders"
+            app:srcCompat="@drawable/ic_location_on_black_24dp" />
+
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView6"
+            android:focusable="false"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/imageView12"
+            android:background="@drawable/borders"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout3"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/location">
+
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView7"
+            android:focusable="false"
+            android:layout_below="@+id/frameLayout3"
+            android:layout_toEndOf="@+id/imageView7"
+            android:layout_toRightOf="@+id/imageView7"
+            android:background="@drawable/borders"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout4"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/date">
+
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/time"
+            android:focusable="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView5"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/frameLayout4"
+            android:background="@drawable/borders"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="Basic Event Information"
+            android:textSize="18sp" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout5"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView13">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLayout7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/time">
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView7"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/location"
+            android:layout_toStartOf="@+id/location"
+            android:background="@drawable/borders"
+            app:srcCompat="@drawable/date" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView5"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/time"
+            android:layout_toStartOf="@+id/time"
+            android:background="@drawable/borders"
+            app:srcCompat="@drawable/time" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_weight="0.26"
+            app:srcCompat="@drawable/logor" />
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textView12"
+            android:layout_toEndOf="@+id/textView2"
+            android:background="@drawable/borders"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:layout_toRightOf="@+id/textView2" />
+
+
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView5"
-        android:textSize="20sp" />
+        android:layout_below="@+id/time">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
 
-        android:id="@+id/name"
-        android:cursorVisible="true"
-        android:layout_alignBottom="@+id/textView2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottomnavmain2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#B07D4A"
+            app:itemTextColor="#FFFACD"
+            app:menu="@menu/initiate_event_info" />
+    </FrameLayout>
 
-    <EditText
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
-        android:cursorVisible="true"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:onClick="click"
-
-        android:text="HH:MM:SS"
-        android:layout_above="@+id/datetv"
-        android:layout_alignLeft="@+id/name"
-        android:layout_alignStart="@+id/name"
-        android:layout_marginBottom="33dp" />
-
-    <TextView
-        android:text="location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/locationtv"
-        android:layout_alignBaseline="@+id/location"
-        android:layout_alignBottom="@+id/location"
-        android:layout_alignStart="@+id/timetv"
-        android:layout_alignLeft="@+id/timetv"
-
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/timetv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/time"
-        android:layout_alignBottom="@+id/time"
-
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="6dp"
-        android:layout_marginStart="6dp"
-        android:text="time"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/locationtv"
-        android:layout_alignLeft="@+id/time"
-
-        android:layout_alignStart="@+id/time"
-        android:layout_marginBottom="33dp"
-        android:cursorVisible="true"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:onClick="click1"
-        android:text="YYYY-MM-DD" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/location"
-
-        android:cursorVisible="true"
-        android:layout_above="@+id/save"
-        android:layout_alignLeft="@+id/date"
-        android:layout_alignStart="@+id/date"
-        android:layout_marginBottom="38dp" />
-
-    <TextView
-        android:text="date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/datetv"
-        android:layout_alignBaseline="@+id/date"
-        android:layout_alignBottom="@+id/date"
-        android:layout_alignStart="@+id/locationtv"
-        android:layout_alignLeft="@+id/locationtv"
-
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:text="name"
-        android:textSize="16sp"
-        android:layout_marginBottom="29dp"
-        android:layout_above="@+id/spinner"
-        android:layout_alignLeft="@+id/type"
-        android:layout_alignStart="@+id/type" />
-
-    <ImageButton
-        android:id="@+id/cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/locationtv"
-        android:layout_alignStart="@+id/locationtv"
-        android:layout_alignTop="@+id/save"
-
-        android:layout_marginLeft="6dp"
-
-        android:layout_marginStart="6dp"
-        android:background="@color/BlueGrey"
-
-        app:srcCompat="@drawable/ic_create_white_36dp" />
-
-    <ImageButton
-        android:id="@+id/save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/location"
-        android:layout_alignParentBottom="true"
-
-        android:layout_alignRight="@+id/location"
-        android:layout_marginBottom="10dp"
-        android:background="@color/BlueGrey"
-        android:onClick="onSave"
-
-        app:srcCompat="@drawable/ic_playlist_add_white_36dp" />
-
-    <TextView
-        android:id="@+id/type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="type"
-        android:textSize="16sp"
-        android:layout_marginBottom="38dp"
-        android:layout_above="@+id/timetv"
-        android:layout_alignLeft="@+id/timetv"
-        android:layout_alignStart="@+id/timetv" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/type"
-        android:layout_alignEnd="@+id/time"
-        android:layout_alignLeft="@+id/time"
-        android:layout_alignRight="@+id/time"
-        android:layout_alignStart="@+id/time" />
-
-</RelativeLayout>
+</LinearLayout>

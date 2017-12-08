@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                         String user = jObj.getJSONObject("user").getString("name");
                         // Launch User activity
 Email.setEmail(email);
-                        Intent i = new Intent(getApplicationContext(), homepage.class);
+                        Intent i = new Intent(getApplicationContext(),firsthome.class);
                         //ntent.putExtra("ListViewValue", eventsID.get(position).toString());
                         i.putExtra("email",email);
                         i.putExtra("password", password);

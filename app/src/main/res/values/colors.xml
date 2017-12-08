@@ -11,7 +11,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorPrimary">#3D3935</color>
     <color name="colorPrimaryDark">#3D3935</color>
-
+    <color name="view_bg">#b20e0f</color>
+    <color name="btn_bg">#3e4a56</color>
     <color name="white">#ffffff</color>
     <color name="edittextunderline">#B07D4A</color>
     <color name ="login_button_background">#B07D4A</color>

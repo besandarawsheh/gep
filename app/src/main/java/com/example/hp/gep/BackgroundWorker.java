@@ -41,52 +41,55 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
                 String date = params[3];
                 String location = params[4];
                 String type = params[5];
-String email=params[6];
+                String email=params[6];
                 String password=params[7];
-                    URL url = new URL(eventInfo_url);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    httpURLConnection.setRequestMethod("POST");
-                    httpURLConnection.setDoOutput(true);
-                    httpURLConnection.setDoInput(true);
-                    OutputStream outputStream = httpURLConnection.getOutputStream();
-                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("name","UTF-8")+"="+URLEncoder.encode(name,"UTF-8")+"&"+URLEncoder.encode("time","UTF-8")+"="+URLEncoder.encode(time,"UTF-8")+"&"+URLEncoder.encode("date","UTF-8")+"="+URLEncoder.encode(date,"UTF-8")+"&"+URLEncoder.encode("location","UTF-8")+"="+URLEncoder.encode(location,"UTF-8")+"&"+URLEncoder.encode("type","UTF-8")+"="+URLEncoder.encode(type,"UTF-8")+"&"+URLEncoder.encode("email","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"+URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8");
+                String lat=params[8];
+                String log=params[9];
+
+                URL url = new URL(eventInfo_url);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String post_data = URLEncoder.encode("name","UTF-8")+"="+URLEncoder.encode(name,"UTF-8")+"&"+URLEncoder.encode("time","UTF-8")+"="+URLEncoder.encode(time,"UTF-8")+"&"+URLEncoder.encode("date","UTF-8")+"="+URLEncoder.encode(date,"UTF-8")+"&"+URLEncoder.encode("location","UTF-8")+"="+URLEncoder.encode(location,"UTF-8")+"&"+URLEncoder.encode("type","UTF-8")+"="+URLEncoder.encode(type,"UTF-8")+"&"+URLEncoder.encode("email","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"+URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")+"&"+URLEncoder.encode("lat","UTF-8")+"="+URLEncoder.encode(lat,"UTF-8")+"&"+URLEncoder.encode("log","UTF-8")+"="+URLEncoder.encode(log,"UTF-8");
                 bufferedWriter.write(post_data);
                 //+"&"+URLEncoder.encode("email","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"+URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")
-                    //String post_data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&" + URLEncoder.encode("time", "UTF-8") + "=" + URLEncoder.encode(time, "UTF-8") + "&" + URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(date, "UTF-8") + "&" + URLEncoder.encode("location", "UTF-8") + "=" + URLEncoder.encode(location, "UTF-8") + "&" + URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8") ;
-                    //bufferedWriter.write(post_data);
-                    bufferedWriter.flush();
-                    bufferedWriter.close();
-                    outputStream.close();
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso_8859-1"));
+                //String post_data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&" + URLEncoder.encode("time", "UTF-8") + "=" + URLEncoder.encode(time, "UTF-8") + "&" + URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(date, "UTF-8") + "&" + URLEncoder.encode("location", "UTF-8") + "=" + URLEncoder.encode(location, "UTF-8") + "&" + URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8") ;
+                //bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso_8859-1"));
 
-                    String line = "";
-                    String result = "";
-                    while ((line = bufferedReader.readLine()) != null) {
-                        result += line;
-                    }
-
-                    bufferedReader.close();
-                    inputStream.close();
-                    httpURLConnection.disconnect();
-                    return result;
-
-
+                String line = "";
+                String result = "";
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += line;
                 }
 
-                catch(MalformedURLException e){
-                    e.printStackTrace();
-                }catch(IOException e){
-                    e.printStackTrace();
-                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return result;
 
 
             }
 
-            return null;
+            catch(MalformedURLException e){
+                e.printStackTrace();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+
 
         }
+
+        return null;
+
+    }
 
     @Override
     protected void onPreExecute() {
@@ -109,7 +112,3 @@ String email=params[6];
 
 
 }
-
-
-
-
